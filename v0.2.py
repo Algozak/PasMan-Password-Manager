@@ -40,6 +40,8 @@ class PasswordManagerApp:
                 svc = input("Service: ")
                 pwd = input("Password: ")
                 self.storage.add(svc, pwd)
+                time.sleep(0.5)
+                print(f"\n{'-'*4}Тhe password is saved{'-'*4}")
             elif choice == "2":
                 svc_input = input("Service name >>> ")
                 self.storage.get_password(svc_input)
