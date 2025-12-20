@@ -44,8 +44,10 @@ class PasswordManagerApp:
                 svc_input = input("Service name >>> ")
                 self.storage.get_password(svc_input)
             elif choice == "3":
+                time.sleep(0.5)
                 self.is_running = False
-                print("Goodbye!")                                      
+                print(f"\nGoodbye!\n")
+                time.sleep(0.5)                                      
 class AppInterface:
     def __init__(self,name,description,version,welcome):
         self.name = name
