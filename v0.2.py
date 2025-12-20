@@ -22,7 +22,15 @@ class CredentialManager:
         if service in self.__vault:
             print(f'\nPassword : {self.__vault[service]}') 
         else:
-            print("Not found")               
+            print("Not found")
+    def svc_list(self):
+        with open(self.filename,'r') as file:
+            data = json.load(file)
+            svclist = list(data)
+            for index,service in enumerate(svclist,start=1):
+                print(f'\n{'='*20}')
+                print(f'{index}.{service}')
+
 class PasswordManagerApp:
     def __init__(self):
         self.ui = AppInterface("PasMan","Your Personal Password Manager",'0.2','Добро Пожаловать')
@@ -33,7 +41,7 @@ class PasswordManagerApp:
         self.ui.show_banner()
 
         while self.is_running:
-            print("\n1. Add Password\n2. Get Password\n3. Exit")
+            print("\n1. Add Password\n2. Get Password\n3. Show a list of services\n4. Exit")
             choice = input("Select option: ")
             
             if choice == "1":
@@ -45,11 +53,17 @@ class PasswordManagerApp:
             elif choice == "2":
                 svc_input = input("Service name >>> ")
                 self.storage.get_password(svc_input)
-            elif choice == "3":
+            elif choice == '3':
+                self.storage.svc_list()
+            elif choice == "4":
                 time.sleep(0.5)
                 self.is_running = False
                 print(f"\nGoodbye!\n")
-                time.sleep(0.5)                                      
+                time.sleep(0.5)
+
+
+
+
 class AppInterface:
     def __init__(self,name,description,version,welcome):
         self.name = name
