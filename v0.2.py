@@ -2,6 +2,9 @@
 import time
 import json
 import os
+import hashlib
+import os
+
 class CredentialManager:
     def __init__(self, filename="vault.json"):
         self.filename = filename
@@ -39,18 +42,63 @@ class CredentialManager:
         with open(self.filename,'w') as f:
             json.dump(data,f,indent=4,ensure_ascii=False)        
             
-            
+
+class AuthManager:
+    def __init__(self, auth_file="shadow.bin"):
+        self.auth_file = auth_file
+        self.is_authenticated = False
+
+    def _hash_password(self, password):
+        return hashlib.sha256(password.encode()).hexdigest()
+
+    def check_first_run(self):
+        return not os.path.exists(self.auth_file)
+
+    def setup_master(self, password):
+        with open(self.auth_file, "w") as f:
+            f.write(self._hash_password(password))
+        print("Master password set!")
+
+    def verify(self, input_password):
+        if not os.path.exists(self.auth_file):
+            return False
+        
+        with open(self.auth_file, "r") as f:
+            stored_hash = f.read()
+        
+        if self._hash_password(input_password) == stored_hash:
+            self.is_authenticated = True
+            return True
+        return False
+
+
 class PasswordManagerApp:
     def __init__(self):
-        self.ui = AppInterface("PasMan","Your Personal Password Manager",'0.2','Добро Пожаловать')
+        self.ui = AppInterface("PasMan","Your Personal Password Manager",'0.2','Welcome')
+        
         self.is_running = True
 
     def run(self):
+        auth = AuthManager()
         self.ui.show_banner()
-
-        if self.is_running:
-            self.ui.main_menu()
-            
+        if auth.check_first_run():
+            new_pass = input("Create your Master Password: ")
+            auth.setup_master(new_pass)
+    
+        attempts = 3
+        while attempts > 0:
+            entered_pass = input("Enter Master Password: ")
+            if auth.verify(entered_pass):
+                time.sleep(0.5)
+                print(f"\n{'-'*5}Access Granted!{'-'*5}")
+                time.sleep(0.5)
+                self.ui.main_menu()
+                return
+            else:
+                attempts -= 1
+                print(f"Wrong! Left: {attempts}")
+    
+        print("Locked out.")
 
 
 class AppInterface:
@@ -67,7 +115,7 @@ class AppInterface:
         print(f'{' '*12}{self.name}{' '*4}v{self.version}\n{' '*6}{self.description}')
         print('=' * 40)
         time.sleep(1)
-        print(f'{' '*6}{'-'*5} {self.welcome} {'-'*5}')
+        print(f'\n{' '*6}{'-'*5} {self.welcome} {'-'*5}\n\n')
 
     def main_menu(self):
         print("\n1. Add Password\n2. Get Password\n3. Show a list of services\n4. Delete the password\n5. Exit")
