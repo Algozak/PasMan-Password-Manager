@@ -30,6 +30,18 @@ class CredentialManager:
             for index,service in enumerate(svclist,start=1):
                 print(f'\n{'='*20}')
                 print(f'{index}.{service}')
+    def del_password(self,service):
+        with open(self.filename,'r') as file:
+            data = json.load(file)
+            if service in data:
+                del data[service]
+                print(f'Тhe service was successfully deleted')
+        with open(self.filename,'w') as f:
+            json.dump(data,f,indent=4,ensure_ascii=False)        
+            
+            
+
+
 
 class PasswordManagerApp:
     def __init__(self):
@@ -41,7 +53,7 @@ class PasswordManagerApp:
         self.ui.show_banner()
 
         while self.is_running:
-            print("\n1. Add Password\n2. Get Password\n3. Show a list of services\n4. Exit")
+            print("\n1. Add Password\n2. Get Password\n3. Show a list of services\n4. Delete the password\n5. Exit")
             choice = input("Select option: ")
             
             if choice == "1":
@@ -55,7 +67,10 @@ class PasswordManagerApp:
                 self.storage.get_password(svc_input)
             elif choice == '3':
                 self.storage.svc_list()
-            elif choice == "4":
+            elif choice == '4':
+                del_input = input("Which service's password do you want to delete?\n >>> ")
+                self.storage.del_password(del_input)    
+            elif choice == "5":
                 time.sleep(0.5)
                 self.is_running = False
                 print(f"\nGoodbye!\n")
