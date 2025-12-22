@@ -39,6 +39,9 @@ class CredentialManager:
             if service in data:
                 del data[service]
                 print(f'Тhe service was successfully deleted')
+            else:
+                time.sleep(0.5)
+                print(f"\n{'-'*4}Service not found{'-'*4}\n")    
         with open(self.filename,'w') as f:
             json.dump(data,f,indent=4,ensure_ascii=False)        
             
