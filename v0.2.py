@@ -8,6 +8,7 @@ import os
 class CredentialManager:
     def __init__(self, filename="vault.json"):
         self.filename = filename
+        self.__check = self.check_file_exists()
         self.__vault = self._load_data()
 
     def _load_data(self):
@@ -15,6 +16,11 @@ class CredentialManager:
             with open(self.filename, "r") as f:
                 return json.load(f)
         return {}
+
+    def check_file_exists(self):
+        if not os.path.exists(self.filename):
+            with open(self.filename,'w') as f:
+                return json.dump({},f)
 
     def add(self, service, password):
         self.__vault[service] = password
@@ -29,10 +35,13 @@ class CredentialManager:
     def svc_list(self):
         with open(self.filename,'r') as file:
             data = json.load(file)
-            svclist = list(data)
-            for index,service in enumerate(svclist,start=1):
-                print(f'\n{'='*20}')
-                print(f'{index}.{service}')
+            if not data:
+                print(f'\n{'-'*4}Список Пуст{'-'*4}\n')
+            else:    
+                svclist = list(data)
+                for index,service in enumerate(svclist,start=1):
+                    print(f'\n{'='*20}')
+                    print(f'{index}.{service}')
     def del_password(self,service):
         with open(self.filename,'r') as file:
             data = json.load(file)
@@ -78,11 +87,11 @@ class AuthManager:
 class PasswordManagerApp:
     def __init__(self):
         self.ui = AppInterface("PasMan","Your Personal Password Manager",'0.2','Welcome')
-        
         self.is_running = True
 
     def run(self):
         auth = AuthManager()
+        self.storage = CredentialManager()
         self.ui.show_banner()
         if auth.check_first_run():
             new_pass = input("Create your Master Password: ")
@@ -94,6 +103,7 @@ class PasswordManagerApp:
             if auth.verify(entered_pass):
                 time.sleep(0.5)
                 print(f"\n{'-'*5}Access Granted!{'-'*5}")
+                self.storage.check_file_exists()
                 time.sleep(0.5)
                 self.ui.main_menu()
                 return
