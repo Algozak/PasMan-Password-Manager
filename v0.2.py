@@ -130,14 +130,22 @@ class AppInterface:
             self.storage.add(svc, pwd)
             time.sleep(0.5)
             print(f"\n{'-'*4}Тhe password is saved{'-'*4}")
+            time.sleep(2)
+            return self.main_menu()
         elif choice == "2":
             svc_input = input("Service name >>> ")
             self.storage.get_password(svc_input)
+            time.sleep(2)
+            return self.main_menu()
         elif choice == '3':
             self.storage.svc_list()
+            time.sleep(2)
+            return self.main_menu()
         elif choice == '4':
             del_input = input("Which service's password do you want to delete?\n >>> ")
-            self.storage.del_password(del_input)    
+            self.storage.del_password(del_input)
+            time.sleep(2)
+            return self.main_menu()    
         elif choice == "5":
             time.sleep(0.5)
             self.is_running = False
