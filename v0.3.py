@@ -48,7 +48,8 @@ class CredentialManager:
                 del self._vault[service]
                 with open(self.filename,'w') as f:
                     json.dump(self._vault,f,indent=4,ensure_ascii=False) 
-                print(f'Тhe service was successfully deleted')    
+                    time.sleep(0.5)
+                print(f'\033[1;33mТhe service was successfully deleted\033[0m')    
             else:
                 time.sleep(0.5)
                 print(f"\n{'-'*4}Service not found{'-'*4}\n")    
