@@ -39,8 +39,8 @@ class CredentialManager:
             else:    
                 svclist = list(sorted(data))
                 for index,service in enumerate(svclist,start=1):
-                    print(f'\n{'='*20}')
-                    print(f'{index}.{service}')
+                    print(f'\n\033[36m{'='*20}\033[0m')
+                    print(f'\033[1;34m{index}\033[0m.{service}')
     def del_password(self,service):
         with open(self.filename,'r') as file:
             data = json.load(file)
@@ -53,7 +53,6 @@ class CredentialManager:
                 time.sleep(0.5)
                 print(f"\n{'-'*4}Service not found{'-'*4}\n")    
                
-
 
 class PasswordCrypto:
     def __init__(self,master_password):
@@ -106,7 +105,7 @@ class AuthManager:
 
 class PasswordManagerApp:
     def __init__(self):
-        self.ui = AppInterface("PasMan","Your Personal Password Manager",'0.2','Welcome',None)
+        self.ui = AppInterface("\033[1;34mPas\033[0m\033[1;33mMan\033[0m","Your Personal Password Manager",'0.3','Welcome',None)
         self.is_running = True
 
     def run(self):
@@ -122,18 +121,19 @@ class PasswordManagerApp:
             entered_pass = input("Enter Master Password: ")
             if auth.verify(entered_pass):
                 time.sleep(0.5)
-                print(f"\n{'-'*5}Access Granted!{'-'*5}")
+                print(f"\n\033[1;32m{'-'*5}Access Granted!{'-'*5}\033[0m")
                 self.storage.check_file_exists()
                 crypto_tool = PasswordCrypto(entered_pass)
-                app = AppInterface("PasMan","Your Personal Password Manager",'0.2','Welcome',crypto_tool)
+                app = AppInterface("PasMan","Your Personal Password Manager",'0.3','Welcome',crypto_tool)
                 time.sleep(0.5)
                 app.main_menu()
                 return
             else:
                 attempts -= 1
-                print(f"Wrong! Left: {attempts}")
-    
-        print("Locked out.")
+                print(f"\033[31m{'#'*3} Wrong! Left: {attempts}\033[0m")
+                time.sleep(0.5)
+
+        print("\n\033[1;31mLocked out !\033[0m\n")
 
 
 class AppInterface:
@@ -146,14 +146,14 @@ class AppInterface:
         self.crypto = crypto
 
     def show_banner(self):
-        print('=' * 40)
-        print(f'{' '*12}{self.name}{' '*4}v{self.version}\n{' '*6}{self.description}')
-        print('=' * 40)
+        print(f'\n\n\n{'='*40}')
+        print(f'\n{' '*12}{self.name}{' '*4}\033[32mv\033[0m{self.version}\n{' '*9}{'-'*20}\n{' '*5}{self.description}\n')
+        print(f'{'='*40}')
         time.sleep(1)
-        print(f'\n{' '*6}{'-'*5} {self.welcome} {'-'*5}\n\n')
+        print(f'\n{' '*10}\033[1;32m{'-'*5} {self.welcome} {'-'*5}\033[0m\n\n')
 
     def main_menu(self):
-        print("\n1. Add Password\n2. Get Password\n3. Show a list of services\n4. Delete the password\n5. Exit")
+        print("\n\033[1;34m1\033[0m. \033[33mAdd Password\033[0m\n\033[1;34m2\033[0m. \033[33mGet Password\033[0m\n\033[1;34m3\033[0m. \033[33mShow a list of services\033[0m\n\033[1;34m4\033[0m. \033[33mDelete the password\033[0m\n\033[1;34m5\033[0m. \033[33mExit\033[0m")
         choice = input("Select option: ")
             
         if choice == "1":
