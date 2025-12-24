@@ -159,7 +159,55 @@ class AppInterface:
             
         if choice == "1":
             svc = input("Service: ")
+            if svc in self.storage._vault:
+                print(f"\n{'-'*4}Service already exists. Try another one.{'-'*4}\n")
+                time.sleep(2)
+                return self.main_menu()
+            elif len(svc.strip()) == 0:
+                print(f"\n{'-'*4}Service name cannot be empty.{'-'*4}\n")
+                time.sleep(2)
+                return self.main_menu()
+            elif len(svc) > 25:
+                print(f"\n{'-'*4}Service name is too long. Max 25 characters.{'-'*4}\n")
+                time.sleep(2)
+                return self.main_menu()
+            elif len(svc) < 4:
+                print(f"\n{'-'*4}Service name is too short. Min 4 characters.{'-'*4}\n")
+                time.sleep(2)
+                return self.main_menu()
+            elif svc.isspace():
+                print(f"\n{'-'*4}Service name cannot be just spaces.{'-'*4}\n")
+                time.sleep(2)
+                return self.main_menu()
+            elif ' ' in svc:
+                print(f"\n{'-'*4}Service name cannot contain spaces.{'-'*4}\n")
+                time.sleep(2)
+                return self.main_menu()
             pwd = input("Password: ")
+            if pwd.strip() == "":
+                print(f"\n{'-'*4}Password cannot be empty.{'-'*4}\n")
+                time.sleep(2)
+                return self.main_menu()
+            elif pwd.isspace():
+                print(f"\n{'-'*4}Password cannot be just spaces.{'-'*4}\n")
+                time.sleep(2)
+                return self.main_menu()
+            elif len(pwd) < 8:
+                print(f"\n{'-'*4}Password is too short. Min 8 characters.{'-'*4}\n")
+                time.sleep(2)
+                return self.main_menu()
+            elif len(pwd) > 20:
+                print(f"\n{'-'*4}Password is too long. Max 20 characters.{'-'*4}\n")
+                time.sleep(2)
+                return self.main_menu()
+            elif pwd.isalpha() or pwd.isdigit():
+                print(f"\n{'-'*4}Password must contain both letters and numbers.{'-'*4}\n")
+                time.sleep(2)
+                return self.main_menu()
+            elif ' ' in pwd:
+                print(f"\n{'-'*4}Password cannot contain spaces.{'-'*4}\n")
+                time.sleep(2)
+                return self.main_menu()
             encrypted_pwd = self.crypto.encrypt(pwd)
             self.storage.add(svc, encrypted_pwd.decode())
             time.sleep(0.5)
@@ -172,7 +220,8 @@ class AppInterface:
                 decrypted_password = self.crypto.decrypt(self.storage._vault[svc_input].encode())
                 print(f'\nPassword : {decrypted_password}')
             else:
-             print("Not found")    
+             time.sleep(0.5)
+             print("\n\033[31m----Not found----\033[0m\n")    
             time.sleep(2)
             return self.main_menu()
         elif choice == '3':
@@ -189,6 +238,10 @@ class AppInterface:
             self.is_running = False
             print(f"\nGoodbye!\n")
             time.sleep(0.5)
+        else:
+            print("\nInvalid option. Try again.\n")
+            time.sleep(1)
+            return self.main_menu()    
 
 
 if __name__ == "__main__":
