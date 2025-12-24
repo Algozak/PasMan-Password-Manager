@@ -43,6 +43,7 @@ Getty Images
     Bash
 
 git clone https://github.com/Algozak/PasMan-Password-Manager.git
+
 cd PasMan-Password-Manager
 
 Установите зависимости:
