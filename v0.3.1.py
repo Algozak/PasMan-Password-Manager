@@ -245,5 +245,11 @@ class AppInterface:
 
 
 if __name__ == "__main__":
-    app = PasswordManagerApp()
-    app.run()
+    try:
+        app = PasswordManagerApp()
+        app.run()
+    except KeyboardInterrupt:
+        print("\n\nExiting... Goodbye!\n")
+        time.sleep(0.5)
+        exit()
+
