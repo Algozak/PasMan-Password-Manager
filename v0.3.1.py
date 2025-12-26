@@ -1,4 +1,5 @@
 # OOP Version
+from cryptography.fernet import InvalidToken
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
@@ -72,7 +73,10 @@ class PasswordCrypto:
     def encrypt(self,plain_text):
         return self.cipher_suite.encrypt(plain_text.encode())
     def decrypt(self,cipher_text):
-        return self.cipher_suite.decrypt(cipher_text).decode()        
+        try:
+            return self.cipher_suite.decrypt(cipher_text).decode()
+        except InvalidToken:
+            return "[ERROR: Invalid Master Password or Corrupted Key]"    
 
 
 class AuthManager:
